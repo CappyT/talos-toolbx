@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# ==============================================================================
+# kubectl-talos_toolbx: The Gigachad Debugger for Talos nodes via Sidero Omni
+# ==============================================================================
+
+NODE=$1
+
+# Argument Check
+if [ -z "$NODE" ]; then
+  echo -e "\033[0;31m❌ Error: You must specify the node name!\033[0m"
+  echo "Usage: kubectl talos-toolbx <node-name>"
+  exit 1
+fi
+
+# Global configuration path (Standard Linux XDG)
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/talos-toolbx"
+CONFIG_FILE="$CONFIG_DIR/config.env"
+
+# If config doesn't exist, create an empty template and warn the user
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo -e "\033[0;33m⚠️ Configuration not found!\033[0m"
+  echo "I've created a template file at: $CONFIG_FILE"
+  echo "Please fill it with your Omni credentials and try again."
+  
+  mkdir -p "$CONFIG_DIR"
+  cat <<EOF > "$CONFIG_FILE"
+# Configuration for kubectl talos-toolbx
+OMNI_ENDPOINT="https://<your-omni-account>.siderolabs.io"
+OMNI_SERVICE_ACCOUNT_KEY="insert-your-sa-key-here"
+OMNI_CLUSTER_NAME="your-cluster-name-on-omni"
+EOF
+  exit 1
+fi
+
+# Load variables (ignoring comments)
+export $(grep -v '^#' "$CONFIG_FILE" | xargs)
+
+echo -e "\033[0;36m🚀 Launching Talos Toolbx on node/$NODE via Omni...\033[0m"
+
+# The actual pod launch (Cleaned up, no container runtime endpoint needed here)
+kubectl debug node/$NODE -it --rm \
+  --profile=sysadmin \
+  --image=ghcr.io/your-user/talos-toolbx:latest \
+  --env="OMNI_ENDPOINT=$OMNI_ENDPOINT" \
+  --env="OMNI_SERVICE_ACCOUNT_KEY=$OMNI_SERVICE_ACCOUNT_KEY" \
+  --env="OMNI_CLUSTER_NAME=$OMNI_CLUSTER_NAME" \
+  -- bash
