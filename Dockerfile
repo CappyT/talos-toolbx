@@ -12,6 +12,8 @@ RUN apk update && apk add --no-cache \
     && curl -sL https://github.com/siderolabs/omni/releases/download/v0.38.1/omnictl-linux-amd64 -o /usr/local/bin/omnictl \
     && chmod +x /usr/local/bin/omnictl
 
+COPY .bashrc /root/.bashrc
+
 ENV IMAGE_SERVICE_ENDPOINT=unix:///host/run/containerd/containerd.sock  
 ENV CONTAINER_RUNTIME_ENDPOINT=unix:///host/run/containerd/containerd.sock
 
