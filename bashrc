@@ -62,7 +62,7 @@ get-talosconfig() {
     fi
     echo -e "${YELLOW}📥 Downloading talosconfig for cluster '${OMNI_CLUSTER_NAME}' via Omni...${NC}"
     mkdir -p ~/.talos
-    omnictl cluster talosconfig "$OMNI_CLUSTER_NAME" --file ~/.talos/config
+    omnictl talosconfig -c "$OMNI_CLUSTER_NAME" 
     echo -e "${GREEN}✅ talosctl is now armed!${NC}"
 }
 
@@ -73,7 +73,7 @@ get-kubeconfig() {
     fi
     echo -e "${YELLOW}📥 Downloading kubeconfig for cluster '${OMNI_CLUSTER_NAME}' via Omni...${NC}"
     mkdir -p ~/.kube
-    omnictl cluster kubeconfig "$OMNI_CLUSTER_NAME" --file ~/.kube/config
+    omnictl kubeconfig -c "$OMNI_CLUSTER_NAME"
     echo -e "${GREEN}✅ kubectl is now connected via Omni!${NC}"
 }
 

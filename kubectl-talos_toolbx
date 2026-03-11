@@ -39,9 +39,9 @@ export $(grep -v '^#' "$CONFIG_FILE" | xargs)
 echo -e "\033[0;36m🚀 Launching Talos Toolbx on node/$NODE via Omni...\033[0m"
 
 # The actual pod launch (Cleaned up, no container runtime endpoint needed here)
-kubectl debug node/$NODE -it --rm \
+kubectl debug node/$NODE -it \
   --profile=sysadmin \
-  --image=ghcr.io/your-user/talos-toolbx:latest \
+  --image=ghcr.io/cappyt/talos-toolbx:latest \
   --env="OMNI_ENDPOINT=$OMNI_ENDPOINT" \
   --env="OMNI_SERVICE_ACCOUNT_KEY=$OMNI_SERVICE_ACCOUNT_KEY" \
   --env="OMNI_CLUSTER_NAME=$OMNI_CLUSTER_NAME" \

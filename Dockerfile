@@ -1,5 +1,7 @@
 FROM alpine
 
+WORKDIR /root
+
 RUN apk update && apk add --no-cache \
     bash-completion curl wget lvm2 util-linux jq yq drbd-utils tcpdump nano cri-tools bash tshark \
     bind-tools iproute2 nmap nmap-ncat socat iperf3 mtr \
