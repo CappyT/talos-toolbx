@@ -4,7 +4,7 @@ RUN apk update && apk add --no-cache \
     bash-completion curl wget lvm2 util-linux jq yq drbd-utils tcpdump nano cri-tools bash tshark \
     bind-tools iproute2 nmap nmap-ncat socat iperf3 mtr \
     e2fsprogs xfsprogs parted \
-    openssl vim tmux lsof strace git \
+    openssl vim tmux lsof strace git
 
 RUN curl -sL https://talos.dev/install | sh \
     && curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
