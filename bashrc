@@ -10,9 +10,10 @@ NC='\033[0m'
 # ==========================================
 # LOGO ASCII ART
 # ==========================================
-clear
-echo -e "${CYAN}"
-cat << 'LOGO'
+_talos_toolbx_welcome() {
+    clear
+    echo -e "${CYAN}"
+    cat << 'LOGO'
   _______    _             _______          _ _         
  |__   __|  | |           |__   __|        | | |        
     | | __ _| | ___  ___     | | ___   ___ | | |____  __
@@ -21,7 +22,11 @@ cat << 'LOGO'
     |_|\__,_|_|\___/|___/    |_|\___/ \___/|_|_.__/_/\_\
                                                         
 LOGO
-echo -e "${YELLOW}           >>> K8s AND TALOS TOOLBX <<<${NC}\n"
+    echo -e "${YELLOW}           >>> K8S & TALOS TOOLBX <<<${NC}\n"
+    unset PROMPT_COMMAND
+}
+
+PROMPT_COMMAND="_talos_toolbx_welcome"
 
 # ==========================================
 # TACTICAL PROMPT (Dynamic Node Name)
