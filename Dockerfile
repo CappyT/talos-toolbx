@@ -14,7 +14,9 @@ RUN curl -sL https://talos.dev/install | sh \
     && curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash \
     && OMNI_VERSION=$(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/siderolabs/omni/releases/latest)) \
     && curl -sL "https://github.com/siderolabs/omni/releases/download/${OMNI_VERSION}/omnictl-linux-amd64" -o /usr/local/bin/omnictl \
-    && chmod +x /usr/local/bin/omnictl
+    && chmod +x /usr/local/bin/omnictl \
+    && K9S_VERSION=$(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/derailed/k9s/releases/latest)) \
+    && curl -sL "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_amd64.tar.gz" | tar xz -C /usr/local/bin k9s
 
 RUN echo "runtime-endpoint: unix:///host/run/containerd/containerd.sock" > /etc/crictl.yaml && \
     echo "image-endpoint: unix:///host/run/containerd/containerd.sock" >> /etc/crictl.yaml && \
