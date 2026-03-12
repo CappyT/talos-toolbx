@@ -33,7 +33,7 @@ Currently, the plugin can be installed locally by placing the executable script 
   
   ```
   mkdir -p ~/.local/bin
-  mv kubectl-talos_toolbx ~/.local/bin/
+  cp kubectl-talos_toolbx ~/.local/bin/
   ```
 4. Verify the installation:
   
