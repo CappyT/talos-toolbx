@@ -12,7 +12,6 @@ NC='\033[0m'
 # ==========================================
 _talos_toolbx_welcome() {
     sleep 1
-    clear
     echo -e "${CYAN}"
     cat << 'LOGO'
   _______    _             _______          _ _         
