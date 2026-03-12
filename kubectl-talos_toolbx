@@ -40,6 +40,7 @@ echo -e "\033[0;36m🚀 Launching Talos Toolbx on node/$NODE via Omni...\033[0m"
 
 # The actual pod launch (Cleaned up, no container runtime endpoint needed here)
 kubectl debug node/$NODE -it \
+  --namespace kube-system \
   --profile=sysadmin \
   --image=ghcr.io/cappyt/talos-toolbx:latest \
   --env="OMNI_ENDPOINT=$OMNI_ENDPOINT" \
