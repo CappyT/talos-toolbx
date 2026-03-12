@@ -29,7 +29,7 @@ LOGO
 PROMPT_COMMAND="_talos_toolbx_welcome"
 
 # ==========================================
-# TACTICAL PROMPT (Dynamic Node Name)
+# PROMPT (Dynamic Node Name)
 # ==========================================
 PS1="\[${YELLOW}\][Talos Toolbx]\[${NC}\] \[${RED}\]\u\[${NC}\]@\[${GREEN}\]\h\[${NC}\]:\[${CYAN}\]\w\[${NC}\]\$ "
 
@@ -60,7 +60,6 @@ alias c='clear'
 # LINSTOR / DRBD WRAPPERS
 # ==========================================
 drbdadm() {
-    # Cerca il container del Linstor Satellite in esecuzione su questo specifico nodo
     local SAT_ID=$(crictl ps --name satellite --state Running -q 2>/dev/null | head -n 1)
     
     if [ -z "$SAT_ID" ]; then
@@ -69,7 +68,6 @@ drbdadm() {
         return 1
     fi
     
-    # Esegue il comando in modo trasparente e filtra la "usage survey" spam di LINBIT
     crictl exec -i -t "$SAT_ID" drbdadm "$@" | awk '
         /Thank you for participating/ { in_survey=1; next }
         in_survey && /user to install this version/ { in_survey=0; next }
