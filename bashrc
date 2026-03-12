@@ -74,6 +74,19 @@ get-kubeconfig() {
     echo -e "${YELLOW}📥 Downloading kubeconfig for cluster '${OMNI_CLUSTER_NAME}' via Omni...${NC}"
     mkdir -p ~/.kube
     omnictl kubeconfig -c "$OMNI_CLUSTER_NAME"
+    
+    # ---------------------------------------------------------
+    # Omni generates an oidc-login flow by default, which needs a browser.
+    # But Omni's K8s proxy accepts the SA Key directly as a Bearer Token!
+    # We rewrite the kubeconfig user to bypass the browser prompt.
+    # ---------------------------------------------------------
+    if [ -n "$OMNI_SERVICE_ACCOUNT_KEY" ]; then
+        echo -e "${YELLOW}🔧 Optimizing kubeconfig for headless Service Account access...${NC}"
+        CURRENT_CTX=$(kubectl config current-context)
+        kubectl config set-credentials omni-headless-sa --token="$OMNI_SERVICE_ACCOUNT_KEY" >/dev/null
+        kubectl config set-context "$CURRENT_CTX" --user=omni-headless-sa >/dev/null
+    fi
+    
     echo -e "${GREEN}✅ kubectl is now connected via Omni!${NC}"
 }
 
