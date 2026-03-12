@@ -57,6 +57,29 @@ alias ip='ip -color=auto'
 alias c='clear'
 
 # ==========================================
+# LINSTOR / DRBD WRAPPERS
+# ==========================================
+drbdadm() {
+    # Cerca il container del Linstor Satellite in esecuzione su questo specifico nodo
+    local SAT_ID=$(crictl ps --name satellite --state Running -q 2>/dev/null | head -n 1)
+    
+    if [ -z "$SAT_ID" ]; then
+        echo -e "${RED}❌ Error: Linstor Satellite container not found on this node.${NC}"
+        echo -e "${YELLOW}Tip: Use 'drbdsetup status' to inspect the raw kernel module instead.${NC}"
+        return 1
+    fi
+    
+    # Esegue il comando in modo trasparente e filtra la "usage survey" spam di LINBIT
+    crictl exec -i -t "$SAT_ID" drbdadm "$@" | awk '
+        /Thank you for participating/ { in_survey=1; next }
+        in_survey && /user to install this version/ { in_survey=0; next }
+        in_survey { next }
+        !started && /^[[:space:]]*$/ { next }
+        { started=1; print }
+    '
+}
+
+# ==========================================
 # CLEANUP TRAP (Paranoid Mode)
 # ==========================================
 cleanup_credentials() {
