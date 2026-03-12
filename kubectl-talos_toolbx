@@ -38,11 +38,25 @@ export $(grep -v '^#' "$CONFIG_FILE" | xargs)
 
 echo -e "\033[0;36m🚀 Launching Talos Toolbx on node/$NODE via Omni...\033[0m"
 
-# The actual pod launch (Cleaned up, no container runtime endpoint needed here)
+# Fetch the latest commit hash from GitHub API to use as the image tag
+echo -e "\033[0;33m🔍 Resolving latest image hash from GitHub...\033[0m"
+LATEST_SHA=$(curl -s "https://api.github.com/repos/cappyt/talos-toolbx/commits/master" | grep -m 1 '"sha":' | cut -d '"' -f 4 | cut -c1-7)
+
+if [ -n "$LATEST_SHA" ]; then
+  IMAGE_TAG="sha-$LATEST_SHA"
+  echo -e "\033[0;32m✅ Using image tag: $IMAGE_TAG\033[0m"
+else
+  # Fallback just in case GitHub API rate limits us or is unreachable
+  echo -e "\033[0;33m⚠️ Could not resolve hash, falling back to 'latest' tag\033[0m"
+  IMAGE_TAG="latest"
+fi
+
+# The actual pod launch
 kubectl debug node/$NODE -it \
   --namespace kube-system \
   --profile=sysadmin \
-  --image=ghcr.io/cappyt/talos-toolbx:latest \
+  --image="ghcr.io/cappyt/talos-toolbx:$IMAGE_TAG" \
+  --image-pull-policy='Always' \
   --env="OMNI_ENDPOINT=$OMNI_ENDPOINT" \
   --env="OMNI_SERVICE_ACCOUNT_KEY=$OMNI_SERVICE_ACCOUNT_KEY" \
   --env="OMNI_CLUSTER_NAME=$OMNI_CLUSTER_NAME" \
