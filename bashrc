@@ -44,6 +44,7 @@ command -v kubectl >/dev/null 2>&1 && source <(kubectl completion bash)
 command -v talosctl >/dev/null 2>&1 && source <(talosctl completion bash)
 command -v omnictl >/dev/null 2>&1 && source <(omnictl completion bash)
 command -v helm >/dev/null 2>&1 && source <(helm completion bash)
+command -v aws_completer >/dev/null 2>&1 && complete -C aws_completer aws
 
 # ==========================================
 # SYSTEM ALIASES & SHORTCUTS

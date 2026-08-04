@@ -5,8 +5,8 @@ WORKDIR /root
 RUN apk update && apk add --no-cache \
     bash-completion curl wget lvm2 util-linux jq yq drbd-utils tcpdump nano cri-tools bash tshark \
     bind-tools iproute2 nmap nmap-ncat socat iperf3 mtr \
-    e2fsprogs xfsprogs parted \
-    openssl vim tmux lsof strace git fzf unzip
+    e2fsprogs xfsprogs parted nvme-cli \
+    openssl vim tmux lsof strace git fzf unzip aws-cli
 
 RUN curl -sL https://talos.dev/install | sh \
     && curl -sL "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl \
