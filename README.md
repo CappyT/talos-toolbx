@@ -13,7 +13,7 @@ Since Talos Linux is designed to be immutable, API-driven, and lacks a tradition
   - *Storage:* `lvm2`, `e2fsprogs`, `xfsprogs`, `parted`, `drbd-utils`, `nvme-cli`
   - *K8s/Talos:* `kubectl`, `talosctl`, `omnictl`, `helm`, `cri-tools`
   - *Cloud:* `aws-cli`
-  - *Utilities:* `jq`, `yq`, `vim`, `tmux`, `lsof`, `strace`
+  - *Utilities:* `jq`, `yq`, `vim`, `tmux`, `lsof`, `strace`, `coreutils`
 - **Chad UX:** Custom `.bashrc` with smart aliases, drbd wrappers, and full auto-completion for `kubectl`, `talosctl`, `omnictl` and many others.
 
 ## 📦 Installation
