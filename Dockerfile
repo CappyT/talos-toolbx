@@ -1,30 +1,46 @@
-FROM alpine
+FROM alpine:3.24
+
+# renovate: datasource=github-releases depName=siderolabs/talos
+ARG TALOSCTL_VERSION=v1.13.9
+# renovate: datasource=github-releases depName=kubernetes/kubernetes
+ARG KUBECTL_VERSION=v1.36.4
+# renovate: datasource=github-releases depName=helm/helm
+ARG HELM_VERSION=v4.2.4
+# renovate: datasource=github-releases depName=siderolabs/omni
+ARG OMNICTL_VERSION=v1.10.4
+# renovate: datasource=github-releases depName=derailed/k9s
+ARG K9S_VERSION=v0.51.0
+# renovate: datasource=github-releases depName=ahmetb/kubectx
+ARG KUBECTX_VERSION=v0.11.0
+# renovate: datasource=github-releases depName=int128/kubelogin
+ARG KUBELOGIN_VERSION=v1.36.3
+
+# Provided by buildkit, the default keeps classic `docker build` working
+ARG TARGETARCH=amd64
 
 WORKDIR /root
 
-RUN apk update && apk add --no-cache \
+RUN apk add --no-cache \
     bash-completion curl wget lvm2 util-linux jq yq drbd-utils tcpdump nano cri-tools bash tshark \
     bind-tools iproute2 nmap nmap-ncat socat iperf3 mtr \
     e2fsprogs xfsprogs parted nvme-cli \
     openssl vim tmux lsof strace git fzf unzip aws-cli coreutils
 
-RUN curl -sL https://talos.dev/install | sh \
-    && curl -sL "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl \
-    && chmod +x /usr/local/bin/kubectl \
-    && curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash \
-    && OMNI_VERSION=$(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/siderolabs/omni/releases/latest)) \
-    && curl -sL "https://github.com/siderolabs/omni/releases/download/${OMNI_VERSION}/omnictl-linux-amd64" -o /usr/local/bin/omnictl \
-    && chmod +x /usr/local/bin/omnictl \
-    && K9S_VERSION=$(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/derailed/k9s/releases/latest)) \
-    && curl -sL "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_amd64.tar.gz" | tar xz -C /usr/local/bin k9s \
-    && curl -sL https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens -o /usr/local/bin/kubens \
-    && curl -sL https://raw.githubusercontent.com/ahmetb/kubectx/master/kubectx -o /usr/local/bin/kubectx \
-    && chmod +x /usr/local/bin/kubens /usr/local/bin/kubectx \
-    && KUBELOGIN_VERSION=$(basename $(curl -Ls -o /dev/null -w %{url_effective} https://github.com/int128/kubelogin/releases/latest)) \
-    && curl -sL "https://github.com/int128/kubelogin/releases/download/${KUBELOGIN_VERSION}/kubelogin_linux_amd64.zip" -o kubelogin.zip \
-    && unzip kubelogin.zip kubelogin \
-    && mv kubelogin /usr/local/bin/kubectl-oidc_login \
-    && rm kubelogin.zip
+RUN curl -fsSL "https://github.com/siderolabs/talos/releases/download/${TALOSCTL_VERSION}/talosctl-linux-${TARGETARCH}" -o /usr/local/bin/talosctl \
+    && curl -fsSL "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl" -o /usr/local/bin/kubectl \
+    && curl -fsSL "https://github.com/siderolabs/omni/releases/download/${OMNICTL_VERSION}/omnictl-linux-${TARGETARCH}" -o /usr/local/bin/omnictl \
+    && curl -fsSL "https://raw.githubusercontent.com/ahmetb/kubectx/${KUBECTX_VERSION}/kubectx" -o /usr/local/bin/kubectx \
+    && curl -fsSL "https://raw.githubusercontent.com/ahmetb/kubectx/${KUBECTX_VERSION}/kubens" -o /usr/local/bin/kubens \
+    && curl -fsSL "https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz" | tar xz -C /tmp \
+    && mv "/tmp/linux-${TARGETARCH}/helm" /usr/local/bin/helm \
+    && curl -fsSL "https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz" | tar xz -C /usr/local/bin k9s \
+    && curl -fsSL "https://github.com/int128/kubelogin/releases/download/${KUBELOGIN_VERSION}/kubelogin_linux_${TARGETARCH}.zip" -o /tmp/kubelogin.zip \
+    && unzip -o /tmp/kubelogin.zip kubelogin -d /tmp \
+    && mv /tmp/kubelogin /usr/local/bin/kubectl-oidc_login \
+    && chmod +x /usr/local/bin/talosctl /usr/local/bin/kubectl /usr/local/bin/omnictl \
+        /usr/local/bin/kubectx /usr/local/bin/kubens /usr/local/bin/helm \
+        /usr/local/bin/k9s /usr/local/bin/kubectl-oidc_login \
+    && rm -rf /tmp/kubelogin.zip "/tmp/linux-${TARGETARCH}"
 
 # Fix for crictl logs and configuration warnings
 RUN echo "runtime-endpoint: unix:///host/run/containerd/containerd.sock" > /etc/crictl.yaml && \
@@ -35,7 +51,7 @@ RUN echo "runtime-endpoint: unix:///host/run/containerd/containerd.sock" > /etc/
 
 COPY bashrc /root/.bashrc
 
-ENV IMAGE_SERVICE_ENDPOINT=unix:///host/run/containerd/containerd.sock  
+ENV IMAGE_SERVICE_ENDPOINT=unix:///host/run/containerd/containerd.sock
 ENV CONTAINER_RUNTIME_ENDPOINT=unix:///host/run/containerd/containerd.sock
 
 ENTRYPOINT [ "/bin/bash" ]
