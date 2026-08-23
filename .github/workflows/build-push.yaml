@@ -1,18 +1,22 @@
 name: Build and Push Talos Toolbx
 
 on:
+  # Every push to the default branch, so the sha-<commit> tag the plugin
+  # resolves from the GitHub API always exists in the registry
   push:
     branches: [ "main", "master" ]
-    paths:
-      - 'Dockerfile'
-      - 'bashrc'
   schedule:
+    # Weekly rebuild to pick up fresh apk packages
     - cron: '0 3 * * 0'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }} 
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push-image:
@@ -20,7 +24,7 @@ jobs:
 
     permissions:
       contents: read
-      packages: write 
+      packages: write
 
     steps:
       - name: 📥 Checkout repository
@@ -43,8 +47,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value={{date 'YYYYMMDD'}},enable={{is_default_branch}}
             type=sha,format=short
-            type=schedule,pattern={{date 'YYYYMMDD'}}
 
       - name: 🚀 Build and push Docker image
         uses: docker/build-push-action@v7
