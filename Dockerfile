@@ -1,7 +1,7 @@
 FROM alpine:3.24
 
 # renovate: datasource=github-releases depName=siderolabs/talos
-ARG TALOSCTL_VERSION=v1.13.9
+ARG TALOSCTL_VERSION=v1.14.0
 # renovate: datasource=github-releases depName=kubernetes/kubernetes
 ARG KUBECTL_VERSION=v1.37.0
 # renovate: datasource=github-releases depName=helm/helm
