@@ -7,7 +7,7 @@ ARG KUBECTL_VERSION=v1.37.0
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v4.2.4
 # renovate: datasource=github-releases depName=siderolabs/omni
-ARG OMNICTL_VERSION=v1.10.5
+ARG OMNICTL_VERSION=v1.11.0
 # renovate: datasource=github-releases depName=derailed/k9s
 ARG K9S_VERSION=v0.51.0
 # renovate: datasource=github-releases depName=ahmetb/kubectx
