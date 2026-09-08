@@ -13,7 +13,7 @@ ARG K9S_VERSION=v0.51.0
 # renovate: datasource=github-releases depName=ahmetb/kubectx
 ARG KUBECTX_VERSION=v0.11.0
 # renovate: datasource=github-releases depName=int128/kubelogin
-ARG KUBELOGIN_VERSION=v1.36.3
+ARG KUBELOGIN_VERSION=v1.36.4
 
 # Provided by buildkit, the default keeps classic `docker build` working
 ARG TARGETARCH=amd64
