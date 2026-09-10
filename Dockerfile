@@ -5,7 +5,7 @@ ARG TALOSCTL_VERSION=v1.14.0
 # renovate: datasource=github-releases depName=kubernetes/kubernetes
 ARG KUBECTL_VERSION=v1.37.0
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v4.2.4
+ARG HELM_VERSION=v4.3.0
 # renovate: datasource=github-releases depName=siderolabs/omni
 ARG OMNICTL_VERSION=v1.11.0
 # renovate: datasource=github-releases depName=derailed/k9s
